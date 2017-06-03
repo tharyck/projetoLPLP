@@ -7,6 +7,13 @@
 #define MAP_SIZE 100
 #define SAIR     0
 
+// to map around the player's position
+const int dx[4] = {1,-1, 0, 0};
+const int dy[4] = {0, 0, 1,-1};
+
+// to check already used caves
+short used[MAP_SIZE][MAP_SIZE];
+
 enum world {ME, GOLD, PIT, STENCH, BREEZE, WUMPUS};
 
 short is_playing = 1;
@@ -43,6 +50,16 @@ int cmd() {
     return strlen(action) != 1;
   }
   return 1;
+}
+
+// return a random number between [1, ..., MAP_SIZE]
+int get_rand_pos() {
+  return 1 + (rand() % MAP_SIZE);
+}
+
+// generate random positions
+void generate_map() {
+  // to do
 }
 
 int main(int argc, char *argv[])
