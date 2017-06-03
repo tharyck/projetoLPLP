@@ -1,0 +1,13 @@
+
+     ================================================
+    		    HUNT THE WUMPUS GAME	
+  ======================================================
+
+    PRESSIONE  PARA
+ 
+	M      Mover-se pelo mapa
+	F      Mostrar flechas disponives
+	S      Sair do game
+
+
+
