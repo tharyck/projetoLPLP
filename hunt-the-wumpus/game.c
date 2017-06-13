@@ -5,13 +5,12 @@
 #include <time.h>
 
 #include "huntthewumpus.h"
-
-short is_playing = 1;
-int Map[MAP_SIZE][MAP_SIZE];
+#include "huntthewumpuscmd.h"
 
 int cmd() {
 
-  printf("Você está na entrada da caverna 1\n");
+  printf("Você está na entrada da caverna %d\n", Map[cur_posx][cur_posy]);
+
   printf("O que deseja fazer?  ");
 
   char action[10];
@@ -26,10 +25,11 @@ int cmd() {
 int main(int argc, char *argv[]) {
 
   usage();
+  generate_map();
   while (is_playing)
   {
     int action = cmd();
-    if (action == SAIR) is_playing = 0;
+    if (action == QUIT) is_playing = 0;
   }
 
   return 0;
