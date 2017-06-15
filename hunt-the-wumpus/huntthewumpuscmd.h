@@ -18,6 +18,7 @@ int move(int cave) {
     int y = cur_posy + dy[i];
     if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) continue;
     if (cave == Map[x][y]) {
+       if (Map[x][y] == PIT) return -1;
        used[cur_posx][cur_posy] = UNDEFINED;
        cur_posx = x; cur_posy = y;
        used[cur_posx][cur_posy] = ME;
@@ -27,12 +28,37 @@ int move(int cave) {
   return 0;
 }
 
+void sensorResult() {
+  printf("Seu sensor mostra que proxíma a você há: ");
+  int i, warnning = 0;
+  for (i = 0; i < COORDS; ++i) {
+    int x = cur_posx + dx[i];
+    int y = cur_posy + dy[i];
+    if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) continue;
+    if (Map[x][y] == PIT) {
+      if (warnning) printf(", ");
+      printf("penhasco");
+      warnning |= 1;
+    } else if (Map[x][y] == BREEZE) {
+      if (warnning) printf(", ");
+      printf("brisa");
+      warnning |= 1;
+    } else if (Map[x][y] == STENCH) {
+      if (warnning) printf(", ");
+      printf("mau cheiro");
+      warnning |= 1;
+    }
+  }
+
+  if (!warnning) printf("Cavernas apenas");
+  printf("\n");
+}
+
 int cmd() {
 
-  printf("Você está na entrada da caverna %d\n", Map[cur_posx][cur_posy]);
+  printf("Você está na caverna %d\n", Map[cur_posx][cur_posy]);
   showCavesAround();
-  // TO DO : show sensor tips
-  //sensorResult();
+  sensorResult();
   printf("O que deseja fazer?  ");
 
   char action[10];
@@ -56,7 +82,10 @@ void run() {
       int op = Map[cur_posx][cur_posy];
       printf("\nIndique qual caverna: ");
       scanf("%d", &op);
-      move(op);
+      int ret = move(op);
+      if (ret == -1) {
+        printf("Você caiu no penhasco! :(\n\nFIM DE JOGO!!\n\n");
+      }
     }
   }
 }
