@@ -18,7 +18,7 @@ int move(int cave) {
     int y = cur_posy + dy[i];
     if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) continue;
     if (cave == Map[x][y]) {
-       if (Map[x][y] == PIT) return -1;
+       if (used[x][y] == PIT) return -1;
        used[cur_posx][cur_posy] = UNDEFINED;
        cur_posx = x; cur_posy = y;
        used[cur_posx][cur_posy] = ME;
@@ -29,28 +29,29 @@ int move(int cave) {
 }
 
 void sensorResult() {
-  printf("Seu sensor mostra que proxíma a você há: ");
-  int i, warnning = 0;
+  short i, pits = 0, brezze = 0, stench = 0;
   for (i = 0; i < COORDS; ++i) {
     int x = cur_posx + dx[i];
     int y = cur_posy + dy[i];
     if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) continue;
-    if (Map[x][y] == PIT) {
-      if (warnning) printf(", ");
-      printf("penhasco");
-      warnning |= 1;
-    } else if (Map[x][y] == BREEZE) {
-      if (warnning) printf(", ");
-      printf("brisa");
-      warnning |= 1;
-    } else if (Map[x][y] == STENCH) {
-      if (warnning) printf(", ");
-      printf("mau cheiro");
-      warnning |= 1;
+    if (used[x][y] == PIT) {
+      pits += 1;
+    } else if (used[x][y] == BREEZE) {
+      brezze += 1;
+    } else if (used[x][y] == STENCH) {
+      stench += 1;
     }
   }
 
-  if (!warnning) printf("Cavernas apenas");
+  if (pits | brezze | stench) {
+    printf("Seu sensor mostra que ao seu sedor há: ");
+    if (pits > 0) printf("penhasco ");
+    if (brezze > 0) printf("brisa ");
+    if (stench > 0) printf("mau cheiro");
+  } else {
+    printf("Seu sensor não encontrou nada.");
+  }
+
   printf("\n");
 }
 
@@ -85,7 +86,9 @@ void run() {
       int ret = move(op);
       if (ret == -1) {
         printf("Você caiu no penhasco! :(\n\nFIM DE JOGO!!\n\n");
+        generate_map();
       }
     }
+    printf("\n\n");
   }
 }
